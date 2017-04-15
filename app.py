@@ -43,7 +43,7 @@ def on_message(client, userdata, msg):
     result = db.measures.insert_one(data)
 
 def on_subscribe(client, userdata,mid, granted_qos):
-    print "userdata : " +str(userdata)
+    print("userdata : %s " % (str(userdata)))
 
 def on_publish(mosq, obj, mid):
     print("mid: " + str(mid))
