@@ -73,17 +73,17 @@ def get_all_measures(chartID = 'chart_ID', chart_type = 'spline', chart_height =
 
     return render_template('index.html', data=measure_list, chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis)
 
-@app.route("/off")
+@app.route("/off", methods=['GET', 'POST'])
 def relay_off():
    print("Sending 1...")
    publish.single("ledStatus", "1", hostname="localhost")
-   return "Relay Off!"
+   return  jsonify({'state':'off'})
 
-@app.route("/on")
+@app.route("/on", methods=['GET', 'POST'])
 def relay_on():
     print("Sending 0...")
     publish.single("ledStatus", "0", hostname="localhost")
-    return "Relay On!"
+    return  jsonify({'state':'on'})
 
 @app.route('/ajax_data', methods=['GET', 'POST'])
 def ajax_data():

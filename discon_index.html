@@ -1,0 +1,83 @@
+<body class="nav-md">
+   <div class="container body">
+     <div class="main_container">
+
+       <!-- page content -->
+       <div class="right_col" role="main">
+         <div class="">
+           <div class="page-title">
+             <div class="title_left">
+               <h1>Control de Consumo Eléctrico Libre</h1>
+             </div>
+
+           </div>
+           <br>
+           <div class="clearfix"></div>
+
+           <div class="row">
+
+             <div class="col-md-4 col-sm-8 col-xs-12 ancho100">
+               <div class="x_panel">
+                 <div class="x_title">
+                   <h2>Medición del Último Consumo</h2>
+                   <div class="clearfix"></div>
+                 </div>
+                 <div class="x_content">
+                   <div id="gauge" style="min-width: 310px; max-width: 400px; height: 300px; margin: 0 auto"></div>
+                   <form id="demo-form2" data-parsley-validate="" class="form-horizontal form-label-left" novalidate="">
+                       <h3 id="minmaxtitle">Defina el Rango de Apagado Automático</h3>
+                       <div id="minmax" class="form-group">
+                         <label class="control-label col-md-6 col-sm-3 col-xs-12" for="maximo">Máximo(Ampere)</span>
+                         </label>
+                         <div class="col-md-6 col-sm-6 col-xs-12">
+                           <input type="number" min="1" max="30" id="maximo" class="form-control col-md-7 col-xs-12">
+                         </div>
+                       </div>
+                       <div class="form-group">
+                         <div class="col-md-12 col-sm-12 col-xs-12">
+                           <div id="control" class="btn-group" data-toggle="buttons">
+                             <label id="acceptbtn" class="btn btn-primary" data-toggle-class="btn-primary" data-toggle-passive-class="btn-default">
+                               <input id="rangobtn" type="radio" name="rango" value="on" data-parsley-multiple="gender"> &nbsp; Establecer &nbsp;
+                             </label>
+                             <br>
+                             <br>
+                             <label id="onbtn" class="btn btn-success" data-toggle-class="btn-primary" data-toggle-passive-class="btn-default">
+                               <input type="radio" name="on" value="on" data-parsley-multiple="gender"> &nbsp; On &nbsp;
+                             </label>
+                             <label id="offbtn" class="btn btn-danger" data-toggle-class="btn-primary" data-toggle-passive-class="btn-default">
+                               <input type="radio" name="off" value="off" data-parsley-multiple="gender"> Off
+                             </label>
+                           </div>
+                         </div>
+                       </div>
+                   </form>
+                 </div>
+               </div>
+             </div>
+
+             <div class="col-md-8 col-sm-8 col-xs-12 ancho100">
+               <div class="x_panel">
+                 <div class="x_title">
+                   <h2>Potencia medida en el día</h2>
+                   <div class="clearfix"></div>
+                 </div>
+                   <div class="x_content">
+                     <div id="potencia_chart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                   </div>
+                 </div>
+                 <div class="x_panel">
+                   <div class="x_title">
+                     <h2>Corriente medida en el día</h2>
+                     <div class="clearfix"></div>
+                   </div>
+                     <div class="x_content">
+                       <div id="corriente_chart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                     </div>
+                   </div>
+               </div>
+             </div>
+           </div>
+         </div>
+         <!-- /page content -->
+       </div>
+</div>

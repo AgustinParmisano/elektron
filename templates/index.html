@@ -7,8 +7,8 @@
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
   </head>
-    <body ng-controller="WordcountController">
-    <div class="container">
+    <body ng-controller="WordcountController" class="nav-md">
+    <div class="container body">
       <div class="row">
         <div class="col-sm-10 col-sm-offset-1">
           <h1> Elektron - Open Electric Measurement v0.1</h1>
@@ -18,13 +18,22 @@
             <li>{{ item }}</li>
             {% endfor %}
           </ul>
+          <div class="col-sm-5 col-sm-offset-1">
+            <button  id="off" type="submit" value="off"> Off </button>
+            <button  id="on" type="submit" value="on"> On </button>
+          </div>
           <div id=container class="chart" style="height: 300px; width: 800px"></div>
         </div>
-        <div class="col-sm-5 col-sm-offset-1">
+      </div>
+      <div class="row">
+        <div class="col-sm-10 col-sm-offset-1">
+          <br>
+          <div id=gauge class="chart" style="height: 300px; width: 800px"></div>
         </div>
       </div>
       <br>
     </div>
+
     <br><br>
     <!-- scripts -->
     <script src="//code.jquery.com/jquery-2.2.1.min.js"></script>
@@ -32,108 +41,50 @@
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
     <script src="{{ url_for('static', filename='main.js') }}"></script>
     <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="http://code.highcharts.com/highcharts-more.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <script src="{{ url_for('static', filename='chart.js') }}"></script>
     <script>
 
-    function get_ajax() {
+  $(document).ready(function(){
 
-      $.ajax({
-         type: 'POST',
-         url: 'ajax_data',
-         dataType: 'json',
-         contentType: 'application/json; charset=utf-8',
-         data: JSON.stringify(data),
-         success: function(callback) {
-             console.log(callback);
-             // Watch out for Cross Site Scripting security issues when setting dynamic content!
-             $(this).text('Hello ' + callback.first_name + ' ' + callback.last_name  + '!');
-             data = callback["measure"];
-         },
-         error: function() {
-             $(this).html("error!");
-         }
-     });
-     return parseFloat(data);
-    }
+        $('#on').on('click', function() {
+            var state = "on";
+            $.ajax({
+                url: '/on',
+                data: state,
+                type: 'POST',
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        });
 
 
-      $(document).ready(function () {
-          Highcharts.setOptions({
-              global: {
-                  useUTC: false
-              }
-          });
+        $('#off').on('click', function() {
+            var state = "off";
+            $.ajax({
+                url: '/off',
+                data: state,
+                type: 'POST',
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        });
 
-          Highcharts.chart('container', {
-              chart: {
-                  type: 'spline',
-                  animation: Highcharts.svg, // don't animate in old IE
-                  marginRight: 10,
-                  events: {
-                      load: function () {
 
-                          // set up the updating of the chart each second
-                          var series = this.series[0];
-                          setInterval(function () {
-                              var x = (new Date()).getTime(), // current time
-                                  y = get_ajax();
-                              series.addPoint([x, y], true, true);
-                          }, 1000);
-                      }
-                  }
-              },
-              title: {
-                  text: 'Live random data'
-              },
-              xAxis: {
-                  type: 'datetime',
-                  tickPixelInterval: 150
-              },
-              yAxis: {
-                  title: {
-                      text: 'Value'
-                  },
-                   min: 0,
-                   max: 100,
-                  plotLines: [{
-                      value: 0,
-                      width: 1,
-                      color: '#808080'
-                  }]
-              },
-              tooltip: {
-                  formatter: function () {
-                      return '<b>' + this.series.name + '</b><br/>' +
-                          Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
-                          Highcharts.numberFormat(this.y, 2);
-                  }
-              },
-              legend: {
-                  enabled: false
-              },
-              exporting: {
-                  enabled: false
-              },
-              series: [{
-                  name: 'Random data',
-                  data: (function () {
-                      // generate an array of random data for the begining
-                      var data = [],
-                          time = (new Date()).getTime(),
-                          i;
-
-                      for (i = -19; i <= 0; i += 1) {
-                          data.push({
-                              x: time + i * 1000,
-                              y: get_ajax()
-                          });
-                      }
-                      return data;
-                  }())
-              }]
-          });
       });
+
+
+
+
     </script>
   </body>
 </html>
