@@ -39,7 +39,7 @@ def on_message(client, userdata, msg):
     #print(msg.topic+" "+str(msg.payload))
     data = json.loads(str(msg.payload))
     data["time"] = str(datetime.now().isoformat())
-    print data
+    print(data)
     result = db.measures.insert_one(data)
 
 def on_subscribe(client, userdata,mid, granted_qos):
