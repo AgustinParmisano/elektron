@@ -52,12 +52,6 @@ def on_publish(mosq, obj, mid):
 def index():
     return render_template('index.html')
 
-@app.route('/pwd', methods=['GET', 'POST'])
-def pwd():
-    dato = os.popen('pwd').read()
-    print dato
-    return dato
-
 @app.route("/data")
 def get_all_measures(chartID = 'chart_ID', chart_type = 'spline', chart_height = 350):
     chart = {"renderTo": chartID, "type": chart_type, "height": chart_height,}
