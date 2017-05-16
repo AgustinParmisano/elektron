@@ -1,0 +1,2 @@
+sudo docker build -t elektron .
+sudo docker run -id -p 5000:5000 -v /$(pwd):/opt/elektron --name elektron elektron bash

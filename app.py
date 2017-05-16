@@ -11,19 +11,18 @@ import time
 from datetime import datetime
 from rq import Queue
 from rq.job import Job
-from worker import conn
 from flask import Flask, render_template, request, jsonify
 from pymongo import MongoClient
 from highcharts import Highchart
 from bson import ObjectId
 
 app = Flask(__name__)
-app.config.from_object(os.environ['APP_SETTINGS'])
+#app.config.from_object(os.environ['APP_SETTINGS'])
 
 client = MongoClient('localhost', 27017)
 db = client['test_db']
 
-q = Queue(connection=conn)
+#q = Queue(connection=conn)
 
 data_list = {}
 data = "Nada"
