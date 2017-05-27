@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Control de Consumo Eléctrico Libre</title>
+
+    <!-- Bootstrap -->
+    <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
+    <!-- bootstrap-progressbar -->
+    <link href="../vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link href="../build/css/custom.min.css" rel="stylesheet">
+
+    <!-- Green IT Theme Style-->
+    <link href="../build/css/sensors.css" rel="stylesheet">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+  </head>
+
+
+  <body class="nav-md">
+    <div class="container body">
+      <div class="main_container">
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+          <div class="">
+            <div class="page-title">
+              <div class="title_left">
+                <h1>Control de Consumo Eléctrico</h1>
+              </div>
+
+            </div>
+            <br>
+            <div class="clearfix"></div>
+
+            <div class="row">
+              <div class="col-md-8 col-sm-8 col-xs-12 ancho100 col-md-offset-2">
+                <div class="x_panel">
+                  <div class="x_title">
+                    <h2>Humedad medida en el día</h2>
+                    <div class="clearfix"></div>
+                  </div>
+                    <div class="x_content">
+                      <div id="humedad_chart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /page content -->
+        </div>
+      </div>
+
+    <!-- jQuery -->
+    <script src="../vendors/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="../vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- Custom Theme Scripts -->
+    <script src="../build/js/custom.min.js"></script>
+
+    <script src="../build/Highcharts-4.2.6/js/highcharts.js"></script>
+    <script src="../build/Highcharts-4.2.6/js/highcharts-more.js"></script>
+
+    <script>
+
+    var json;
+    var gaugechart;
+    var curr;
+    var time;
+    var state = "on";
+    var tension = 215; //La tensión puede variar
+    var consumo = [];
+
+    //Web Socket comunication
+    //Connect to server
+    var ws = new WebSocket("ws://localhost:8888/websocket");
+    //console.log(ws);
+
+    //Open the socket and say hi
+    ws.onopen = function() {
+      ws.send("Hello, world");
+    };
+
+    //Receive message form server
+    ws.onmessage = function (evt) {
+      json = JSON.parse(evt.data);
+      //console.log(json);
+
+      //set the variables of the object to global variables
+      curr = json.data;
+      state = json.estado;
+      timestamp = json.timestamp;
+
+
+      var date = new Date(timestamp*1000);
+      // Hours part from the timestamp
+      var hours = date.getHours();
+      // Minutes part from the timestamp
+      var minutes = date.getMinutes();
+      // Seconds part from the timestamp
+      var seconds = date.getSeconds();
+      // Format Time
+      time=hours + ":" + minutes + ":" + seconds;
+
+    };
+
+
+    $(function () {
+        $(document).ready(function () {
+            Highcharts.setOptions({
+                global: {
+                    useUTC: false
+                }
+            
+            });
+
+
+            $('#corriente_chart').highcharts({
+                chart: {
+                    type: 'spline',
+                    animation: Highcharts.svg, // don't animate in old IE
+                    marginRight: 10,
+                    events: {
+                        load: function () {
+
+                            // set up the updating of the chart each second
+                            var series = this.series[0];
+                            setInterval(function () {
+                                var x = (new Date()).getTime(), // current time
+                                    y = curr;
+                                series.addPoint([x, y], true, true);
+                            }, 1000);
+                        }
+                    }
+                },
+                title: {
+                    text: 'Corriente sensada por segundo'
+                },
+                xAxis: {
+                    type: 'datetime',
+                    tickPixelInterval: 150
+                },
+                yAxis: {
+                    title: {
+                        text: 'Watts'
+                    },
+                    min: 0,
+                    max: 100,
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        color: '#0000BB'
+                    }]
+                },
+                tooltip: {
+                    formatter: function () {
+                        return '<b>' + this.series.name + '</b><br/>' +
+                            Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+                            Highcharts.numberFormat(this.y, 2);
+                    }
+                },
+                legend: {
+                    enabled: false
+                },
+                exporting: {
+                    enabled: false
+                },
+                series: [{
+                    name: 'Corriente Medida por Segundo',
+                    color: '#0000BB',
+                    data: (function () {
+                        // generate an array of random data
+                        var data = [],
+                            time = (new Date()).getTime(),
+                            i;
+
+                        for (i = -19; i <= 0; i += 1) {
+                            data.push({
+                                x: time + i * 1000,
+                                y: curr
+                            });
+                        }
+                        return data;
+                    }())
+                }],
+                credits: {
+                  enabled: false
+                },
+            });
+    });
+});
+
+    </script>
+  </body>
+</html>
